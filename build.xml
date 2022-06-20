@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="compiltation des classes" default="info" basedir=".">
+	<!-- Definition des proprietes du projet -->
+	<property name="projet.sources.dir" value="src" />
+	<property name="projet.bin.dir" value="bin" />
+	<property name="projet.lib.dir" value="lib" />
+	<property name="projet.delivery.dir" value="delivery" />
+	<property name="java.lib.dir" value="${java.class.path}" />
+	<property name="apache" value="C:\SYSTEM\runtimes\httpd-2.4.51-win64-VS16\Apache24"/>
+	
+	<tstamp>
+		<format property="DT_SYS" pattern="yyyy-MM-dd" locale="fr,FR" />
+		<format property="TS_SYS" pattern="HH:mm:ss,SSS" locale="fr,FR" />
+		<format property="JAR_ID" pattern="yyyyMMdd_HHmmss" locale="fr,FR" />
+	</tstamp>
+
+
+	<target name="info">
+		<echo message="Date   :  ${DT_SYS} - ${TS_SYS}" />
+		<echo message="Jar Id :  ${JAR_ID} " />
+		<echo message="Java version (${ant.java.version}) " />
+	</target>
+
+	<target name="compile">
+		<echo message="Start compile  :  ${DT_SYS} - ${TS_SYS}" />
+		<javac srcdir="${projet.sources.dir}"
+		       destdir="${projet.bin.dir}"
+		       debug="on"
+		       source="11"/>
+	</target>
+	
+	<target name="package">
+		<echo message="Start packaging  :  ${DT_SYS} - ${TS_SYS}" />
+		<jar destfile="${projet.delivery.dir}/generator.jar">
+		    <fileset dir="${projet.bin.dir}"
+		             excludes="**/Test.class"/>
+		</jar>
+	</target>
+	
+	<target name="copyToApache">
+		<echo message="Start copy files (pages) to Apache Server  :  ${DT_SYS} - ${TS_SYS}" />
+		<copy todir="${apache}\htdocs">
+		  <fileset dir="./tmp/site">
+		  </fileset>
+		</copy>
+		<echo message="Start update passwd file  :  ${DT_SYS} - ${TS_SYS}" />
+		<copy file="./files/file.mdp" todir="${apache}\conf\secure"/>
+	</target>
+	
+</project>
